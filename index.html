@@ -1,0 +1,38 @@
+<html lang="zh-cn">
+    <head>
+        <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
+        <script src="static/js/jquery.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="static/mycss.css">
+        <title>Title</title>
+        <script>
+            function load(number)
+            {
+                $.get("static/txt/"+number+".txt",function(data){
+                    data = eval('('+data+')');
+                    var content = data['content'];
+                    $("#before").before("<p>"+content+"</p>");
+                    if(data['end'] != 0)
+                    {
+                        $("#before").before("<img src='static/pic/"+data['end']+".jpg' alt='404'>")
+                        return;
+                    }
+                    var next = data["next"];
+                    for(var i=0;i<next.length;i++)
+                    {
+                        $("#before").before("<button class='next' onclick='step(this);' name='"+next[i]['number']+"'>"+next[i]['order']+"</button>");
+                    }
+                });
+            }
+            function step(e)
+            {
+                var next = $(e).attr('name');
+                $("button").remove();
+                load(next);
+            }
+        </script>
+    </head>
+    <body>
+        <div id="before"></div>
+        <script>load(1);</script>
+    </body>
+</html>
