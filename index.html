@@ -10,17 +10,28 @@
                 $.get("static/txt/"+number+".txt",function(data){
                     data = eval('('+data+')');
                     var content = data['content'];
-                    $("#before").before("<p>"+content+"</p>");
-                    if(data['end'] != 0)
-                    {
-                        $("#before").before("<img src='static/pic/"+data['end']+".jpg' alt='404'>")
-                        return;
-                    }
-                    var next = data["next"];
-                    for(var i=0;i<next.length;i++)
-                    {
-                        $("#before").before("<button class='next' onclick='step(this);' name='"+next[i]['number']+"'>"+next[i]['order']+"</button>");
-                    }
+                    var timeout = data['timeout'];
+                    var index = 1;
+                    $("#before").before("<p>"+content[0]+"</p>");
+                    var timer = setInterval(function(){
+                        if(index >= content.length)
+                        {
+                            clearInterval(timer);
+                            if(data['end'] != 0)
+                            {
+                                $("#before").before("<img src='static/pic/"+data['end']+".jpg' alt='404'>")
+                                return;
+                            }
+                            var next = data["next"];
+                            for(var i=0;i<next.length;i++)
+                            {
+                                $("#before").before("<button class='next' onclick='step(this);' name='"+next[i]['number']+"'>"+next[i]['order']+"</button>");
+                            }
+                            return;
+                        }
+                        $("#before").before("<p>"+content[index]+"</p>");
+                        index++;
+                    },timeout);
                 });
             }
             function step(e)
